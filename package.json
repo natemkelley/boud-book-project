@@ -5,6 +5,7 @@
   "type": "module",
   "main": "puppeteer.js",
   "dependencies": {
+    "express": "^4.17.1",
     "html-table-to-json": "^1.0.0",
     "node-html-parser": "^3.0.3",
     "puppeteer": "^8.0.0"

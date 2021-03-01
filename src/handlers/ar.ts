@@ -24,7 +24,8 @@ const isExactMatch = (
 ) => {
   if (titleSearch === title && !authorSearch) return true;
   if (titleSearch === title && author === authorSearch) return true;
-  if (titleSearch === title && authorSearch.includes(authorSearch)) return true;
+  if (titleSearch === title && author.includes(authorSearch)) return true;
+  if (title.includes(titleSearch) && author.includes(authorSearch)) return true;
   return false;
 };
 

@@ -2,17 +2,25 @@
   "name": "boud-book-project-ar-scrubber",
   "version": "1.0.0",
   "description": "",
-  "type": "module",
-  "main": "puppeteer.js",
+  "main": "dist/index.js",
+  "scripts": {
+    "prebuild": "tslint -c tslint.json -p tsconfig.json --fix",
+    "build": "tsc",
+    "prestart": "npm run build",
+    "start": "node .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
   "dependencies": {
     "express": "^4.17.1",
     "html-table-to-json": "^1.0.0",
     "node-html-parser": "^3.0.3",
     "puppeteer": "^8.0.0"
   },
-  "devDependencies": {},
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "devDependencies": {
+    "@types/express": "^4.17.11",
+    "@types/node": "^14.14.31",
+    "tslint": "^6.1.3",
+    "typescript": "^4.2.2"
   },
   "repository": {
     "type": "git",

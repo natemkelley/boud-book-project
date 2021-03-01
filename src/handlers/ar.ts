@@ -1,5 +1,7 @@
-import puppeteer from "puppeteer";
-import HTMLParser from "node-html-parser";
+import puppeteer, { Page } from "puppeteer";
+import { parse as HTMLParser } from "node-html-parser";
+import { ARResult } from "./interfaces";
+
 const AR_WEBSITE_URL = "https://www.arbookfind.com/";
 
 const QUERY_PARAMETERS = {
@@ -14,65 +16,64 @@ const QUERY_PARAMETERS = {
   searchBtnId: "#ctl00_ContentPlaceHolder1_btnDoIt",
 };
 
-const isExactMatch = (titleSearch, title, author, authorSearch) => {
+const isExactMatch = (
+  titleSearch: string,
+  title: string,
+  author: string,
+  authorSearch: string
+) => {
   if (titleSearch === title && !authorSearch) return true;
   if (titleSearch === title && author === authorSearch) return true;
-  if (titleSearch === title && author.includes(authorSearch)) return true;
+  if (titleSearch === title && authorSearch.includes(authorSearch)) return true;
   return false;
 };
 
-const goToSearchPage = async page => {
+const goToSearchPage = async (page: Page) => {
   await page.goto(AR_WEBSITE_URL, {
     waitUntil: "networkidle0",
   });
   await page.evaluate(() => {
-    document.getElementById("radTeacher").checked = true;
+    (document.getElementById("radTeacher") as any).checked = true;
   });
-  await page.click("#btnSubmitUserType", {
-    waitUntil: "networkidle0",
-  });
+  await page.click("#btnSubmitUserType");
   return page;
 };
 
-const performSearch = async (page, search) => {
+const performSearch = async (page: Page, search: string) => {
   await page.waitForSelector(QUERY_PARAMETERS.searchBarId);
   await page.waitForSelector(QUERY_PARAMETERS.searchBtnId);
   await page.type(QUERY_PARAMETERS.searchBarId, search);
-  await page.click(QUERY_PARAMETERS.searchBtnId, {
-    waitUntil: "networkidle0",
-  });
+  await page.click(QUERY_PARAMETERS.searchBtnId);
   await page.waitForNavigation({ waitUntil: "networkidle0" });
   return page;
 };
 
-async function clickOnResult(page) {
+async function clickOnResult(page: Page) {
   const resultSelector = ".book-result a";
   await page
     .waitForSelector(resultSelector, {
       timeout: 5000,
     })
     .catch(() => {
-      throw "no results";
+      throw new Error("no results");
     });
 
-  await page.click(resultSelector, {
-    waitUntil: "networkidle0",
-  });
+  await page.click(resultSelector);
   await page.waitForNavigation({ waitUntil: "networkidle0" });
   return page;
 }
 
-const parseISBNTable = async page => {
+const parseISBNTable = async (page: Page) => {
   const nodeList = await page.$$eval(QUERY_PARAMETERS.isbn, rowArray =>
     rowArray.map(row => row.outerHTML)
   );
 
-  let returnArray = [];
+  const returnArray = [];
 
-  //ignore header
+  // ignore header
   for (let index = 1; index < nodeList.length; index++) {
     const element = nodeList[index];
-    const HTMLElement = HTMLParser.parse(element);
+    const HTMLElement = HTMLParser(element);
     const TDArray = HTMLElement.querySelectorAll("td");
     const data = {
       publisher: TDArray[0].innerText,
@@ -86,8 +87,12 @@ const parseISBNTable = async page => {
   return returnArray;
 };
 
-const parseResults = async (page, titleSearch, authorSearch) => {
-  const getInnerText = el => el.innerText;
+const parseResults = async (
+  page: Page,
+  titleSearch: string,
+  authorSearch: string
+) => {
+  const getInnerText = (el: HTMLElement) => el.innerText;
   const points = await page.$eval(QUERY_PARAMETERS.points, getInnerText);
   const level = await page.$eval(QUERY_PARAMETERS.level, getInnerText);
   const interestLevel = await page.$eval(
@@ -110,28 +115,31 @@ const parseResults = async (page, titleSearch, authorSearch) => {
   };
 };
 
-const createSearchQuery = (titleSearch, authorSearch) => {
+const createSearchQuery = (titleSearch: string, authorSearch: string) => {
   return authorSearch ? `${titleSearch} ${authorSearch}` : titleSearch;
 };
 
-export const getARscore = async (titleSearch, authorSearch) => {
-  return new Promise(async (resolve, reject) => {
-    const browser = await puppeteer.launch();
-    try {
-      const search = createSearchQuery(titleSearch, authorSearch);
-      let page = await browser.newPage();
-      page = await goToSearchPage(page);
-      page = await performSearch(page, search);
-      page = await clickOnResult(page);
-      const results = await parseResults(page, titleSearch, authorSearch);
-      await browser.close();
-      resolve({ ...results, hasResults: true });
-    } catch (error) {
-      reject({ error, hasResults: false });
-    }
+export const getARscore = async (
+  titleSearch: string,
+  authorSearch?: string
+) => {
+  const browser = await puppeteer.launch();
+  try {
+    const search = createSearchQuery(titleSearch, authorSearch);
+    let page = await browser.newPage();
+    page = await goToSearchPage(page);
+    page = await performSearch(page, search);
+    page = await clickOnResult(page);
+    const results = await parseResults(page, titleSearch, authorSearch);
     await browser.close();
-  });
+    return { ...results } as ARResult;
+  } catch ({ message }) {
+    await browser.close();
+    return { error: message } as any;
+  }
 };
+
+export default getARscore;
 
 async function test() {
   let result = await getARscore("East of Eden", "Steinbeck");
@@ -150,4 +158,4 @@ async function test() {
   result && console.log(result.hasResults, result.title, result.points);
 }
 
-test();
+// test();

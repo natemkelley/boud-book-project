@@ -1,0 +1,26 @@
+{
+  "name": "boud-book-project-ar-scrubber",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "puppeteer.js",
+  "dependencies": {
+    "html-table-to-json": "^1.0.0",
+    "node-html-parser": "^3.0.3",
+    "puppeteer": "^8.0.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/natemkelley/boud-book-project.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/natemkelley/boud-book-project/issues"
+  },
+  "homepage": "https://github.com/natemkelley/boud-book-project#readme"
+}

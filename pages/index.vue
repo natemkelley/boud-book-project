@@ -37,7 +37,7 @@
 import { Vue, Component } from "vue-property-decorator";
 import debounce from "lodash/debounce";
 import findIndex from "lodash/findIndex";
-import { getPoints, getBookList } from "api/index";
+import { getPoints, getBookList, test } from "api/index";
 
 @Component
 export default class HomePage extends Vue {
@@ -64,7 +64,7 @@ export default class HomePage extends Vue {
   }
 
   async getArScores(title: string, author: string, id: string) {
-    const result = await getPoints(title, author);
+    /*  const result = await getPoints(title, author);
     const indexOfResult = findIndex(this.items, { id });
 
     if (indexOfResult > -1 && result.isExactMatch) {
@@ -72,7 +72,11 @@ export default class HomePage extends Vue {
         ...this.items[indexOfResult],
         arData: result,
       };
-    }
+    }*/
+  }
+
+  async mounted() {
+    test();
   }
 }
 </script>

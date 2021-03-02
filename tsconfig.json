@@ -8,7 +8,7 @@
     "allowJs": true,
     "sourceMap": true,
     "importHelpers": true,
-    "strict": true,
+    "strictPropertyInitialization": false,
     "noEmit": true,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
@@ -19,7 +19,7 @@
       "api/*": ["./src/api/*"],
       "helpers/*": ["./src/helpers/*"]
     },
-    "types": ["@nuxt/types", "@nuxtjs/axios", "@types/node"]
+    "types": ["@nuxtjs/firebase", "@nuxt/types", "@nuxtjs/axios", "@types/node"]
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules", ".nuxt", "dist"]

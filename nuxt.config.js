@@ -1,3 +1,7 @@
+require("dotenv").config({
+  path: ".env",
+});
+
 import colors from "vuetify/es5/util/colors";
 import { resolve } from "path";
 
@@ -15,6 +19,17 @@ export default {
       { hid: "description", name: "description", content: "" },
     ],
     link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }],
+  },
+
+  //environment
+  env: {
+    apiKey: process.env.apiKey,
+    authDomain: process.env.authDomain,
+    projectId: process.env.projectId,
+    storageBucket: process.env.storageBucket,
+    messagingSenderId: process.env.messagingSenderId,
+    appId: process.env.appId,
+    measurementId: process.env.measurementId,
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
@@ -35,12 +50,7 @@ export default {
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
-  modules: [
-    // https://go.nuxtjs.dev/axios
-    "@nuxtjs/axios",
-    // https://go.nuxtjs.dev/pwa
-    "@nuxtjs/pwa",
-  ],
+  modules: ["@nuxtjs/pwa"],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {},

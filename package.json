@@ -7,7 +7,7 @@
     "build": "nuxt build",
     "start": "nuxt start",
     "generate": "nuxt generate",
-    "deploy": "nuxt build && firebase deploy --only hosting:boud-books"
+    "deploy": "nuxt build && firebase deploy"
   },
   "dependencies": {
     "@nuxt/typescript-runtime": "^2.0.1",

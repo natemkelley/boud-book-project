@@ -25,9 +25,9 @@
           </div>
         </v-card-text>
         <v-card-actions>
-          <v-btn outlined rounded text>
-            {{ item.arScore || "loading" }}
-          </v-btn>
+          <code>
+            {{ item.arData || "loading" }}
+          </code>
         </v-card-actions>
       </v-card>
     </div>
@@ -38,30 +38,29 @@
 import { Vue, Component, Prop } from "vue-property-decorator";
 import { getBookList } from "@/src/api/googleBooks";
 import { getPoints } from "@/src/api/ar";
-
 import debounce from "lodash/debounce";
+import findIndex from "lodash/findIndex";
+import cloneDeep from "lodash/cloneDeep";
 
 @Component
 export default class HomePage extends Vue {
   value = "";
-  result: any = {};
+  items: any = {};
 
   get search() {
-    return debounce(this.performSearch, 1000);
-  }
-
-  get items() {
-    return this.result.items || [];
+    return debounce(this.performSearch, 1500);
   }
 
   async performSearch() {
     const result = await getBookList(this.value);
-    this.result = result;
+    this.items = result.items;
 
-    this.result.items.forEach((result: any) => {
+    this.items.forEach((result: any) => {
       const title = result.volumeInfo.title;
-      const author = result.volumeInfo?.author && result.volumeInfo?.author[0];
+      const author =
+        result.volumeInfo?.authors && result.volumeInfo?.authors[0];
       const id = result.id;
+
       this.getArScores(title, author, id);
     });
   }
@@ -69,7 +68,18 @@ export default class HomePage extends Vue {
   async getArScores(title: string, author: string, id: string) {
     console.log(title, author);
     const result = await getPoints(title, author);
-    console.log(result);
+    const indexOfResult = findIndex(this.items, { id });
+
+    if (indexOfResult > -1 && result.isExactMatch) {
+      const resultClone = cloneDeep(this.items);
+
+      resultClone[indexOfResult] = {
+        ...this.items[indexOfResult],
+        arData: result,
+      };
+      console.log(resultClone[indexOfResult], id);
+      this.items = resultClone;
+    }
   }
 }
 </script>

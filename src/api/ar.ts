@@ -1,7 +1,8 @@
 import queryString from "query-string";
 import axios from "axios";
+import { ARResult } from "./interfaces";
 
-export const LOCAL_API = "http://localhost:8080";
+const LOCAL_API = "http://localhost:8080";
 
 const createArQuery = (title: string, author: string) => {
   const query = queryString.stringify({ title, author });
@@ -9,4 +10,4 @@ const createArQuery = (title: string, author: string) => {
 };
 
 export const getPoints = async (title: string, author: string) =>
-  axios.get(createArQuery(title, author)).then(({ data }) => data);
+  axios.get(createArQuery(title, author)).then(({ data }) => data as ARResult);

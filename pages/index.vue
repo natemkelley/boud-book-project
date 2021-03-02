@@ -19,7 +19,6 @@
           <p class="display-1 text--primary">
             {{ item.volumeInfo.title }}
           </p>
-          <p>adjective</p>
           <div class="text--primary">
             {{ item.volumeInfo.description }}
           </div>
@@ -35,12 +34,10 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from "vue-property-decorator";
-import { getBookList } from "@/src/api/googleBooks";
-import { getPoints } from "@/src/api/ar";
+import { Vue, Component } from "vue-property-decorator";
 import debounce from "lodash/debounce";
 import findIndex from "lodash/findIndex";
-import cloneDeep from "lodash/cloneDeep";
+import { getPoints, getBookList } from "api/index";
 
 @Component
 export default class HomePage extends Vue {
@@ -53,6 +50,7 @@ export default class HomePage extends Vue {
 
   async performSearch() {
     const result = await getBookList(this.value);
+    console.log(result);
     this.items = result.items;
 
     this.items.forEach((result: any) => {
@@ -66,19 +64,14 @@ export default class HomePage extends Vue {
   }
 
   async getArScores(title: string, author: string, id: string) {
-    console.log(title, author);
     const result = await getPoints(title, author);
     const indexOfResult = findIndex(this.items, { id });
 
     if (indexOfResult > -1 && result.isExactMatch) {
-      const resultClone = cloneDeep(this.items);
-
-      resultClone[indexOfResult] = {
+      this.items[indexOfResult] = {
         ...this.items[indexOfResult],
         arData: result,
       };
-      console.log(resultClone[indexOfResult], id);
-      this.items = resultClone;
     }
   }
 }

@@ -1,4 +1,5 @@
 import colors from "vuetify/es5/util/colors";
+import { resolve } from "path";
 
 export default {
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
@@ -49,6 +50,13 @@ export default {
     manifest: {
       lang: "en",
     },
+  },
+
+  alias: {
+    images: resolve(__dirname, "./assets/images"),
+    styles: resolve(__dirname, "./assets/styles"),
+    api: resolve(__dirname, "./src/api"),
+    helpers: resolve(__dirname, "./helpers"),
   },
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify

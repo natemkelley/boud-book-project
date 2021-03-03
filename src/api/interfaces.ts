@@ -27,6 +27,7 @@ interface VolumeInformation {
   pageCount: number;
   previewLink: string;
   printType: string;
+  publisher: string;
   publishedDate: string | number;
   ratingsCount: number;
   readingModes: {

@@ -57,9 +57,9 @@
             </div>
             <v-card-actions class="d-flex align-center justify-space-between">
               <v-btn
-                v-if="book.volumeInfo.infoLink"
+                v-if="book.volumeInfo.previewLink"
                 class="ml-2"
-                :href="book.volumeInfo.infoLink"
+                :href="book.volumeInfo.previewLink"
                 outlined
                 rounded
                 small
@@ -94,6 +94,7 @@ import debounce from "lodash/debounce";
 import { getBookList, GoogleSearchListItem } from "api/index";
 import uniqolor from "uniqolor";
 import ISO6391 from "iso-639-1";
+import moment from "moment";
 
 @Component
 export default class AdminPage extends Vue {
@@ -123,20 +124,6 @@ export default class AdminPage extends Vue {
 
   createPills(book: GoogleSearchListItem) {
     const returnArray = [];
-
-    /*
-accessViewStatus:"SAMPLE"
-country:"US"
-embeddable:true
-epub:Object
-pdf:Object
-publicDomain:false
-quoteSharingAllowed:false
-textToSpeechPermission:"ALLOWED_FOR_ACCESSIBILITY"
-viewability:"PARTIAL"
-webReaderLink:"http://play.go
-*/
-
     if (book.volumeInfo.language)
       returnArray.push(ISO6391.getName(book.volumeInfo.language));
     if (book.accessInfo.country) returnArray.push(book.accessInfo.country);
@@ -144,7 +131,7 @@ webReaderLink:"http://play.go
     if (book.volumeInfo.pageCount)
       returnArray.push(`${book.volumeInfo.pageCount} Pages`);
     if (book.volumeInfo.publishedDate)
-      returnArray.push(book.volumeInfo.publishedDate);
+      returnArray.push(moment(book.volumeInfo.publishedDate).year());
     if (book.volumeInfo.publisher) returnArray.push(book.volumeInfo.publisher);
 
     return returnArray;

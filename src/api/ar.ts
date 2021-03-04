@@ -10,4 +10,9 @@ const createArQuery = (title: string, author: string) => {
 };
 
 export const getPoints = async (title: string, author: string) =>
-  axios.get(createArQuery(title, author)).then(({ data }) => data as ARResult);
+  axios
+    .get(createArQuery(title, author))
+    .then(({ data }) => data as ARResult)
+    .catch(() => {
+      throw "Server is down";
+    });

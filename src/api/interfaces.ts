@@ -90,13 +90,13 @@ interface ARISBN {
 }
 
 export interface ARResult {
-  points: number;
-  level: number;
-  interestLevel: string;
-  author: string;
-  title: string;
-  isbn: ARISBN[];
-  isExactMatch: boolean;
-  searchQuery: string;
+  points?: number;
+  level?: number;
+  interestLevel?: string;
+  author?: string;
+  title?: string;
+  isbn?: ARISBN[];
+  isExactMatch?: boolean;
+  searchQuery?: string;
   error?: string;
 }

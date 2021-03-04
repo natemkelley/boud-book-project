@@ -1,4 +1,3 @@
-import Vue from "vue";
 import { Module, VuexModule, Mutation, Action } from "vuex-module-decorators";
 import { getBookList, GoogleSearchListItem, getPoints } from "../src/api/index";
 import {
@@ -49,10 +48,15 @@ export default class BookModule extends VuexModule {
 
   @Action
   async getArBookData({ title, author, id }: BookSearch) {
-    const arData = await getPoints(title, author);
-    const updatedBooks = updateBookWithArInfo(this.books, arData, id);
-    this.context.commit(SAVE_GOOGLE_BOOK_LIST, updatedBooks);
+    try {
+      const arData = await getPoints(title, author);
+      const updatedBooks = updateBookWithArInfo(this.books, arData, id);
+      this.context.commit(SAVE_GOOGLE_BOOK_LIST, updatedBooks);
+    } catch (error) {
+      this.context.commit(
+        SAVE_GOOGLE_BOOK_LIST,
+        updateBookWithArInfo(this.books, { error }, id)
+      );
+    }
   }
 }
-
-//

@@ -23,9 +23,9 @@
       <v-col cols="8">
         <div class="mx-3">
           <v-card
-            v-for="book in books"
+            v-for="book in booksWithColors"
             :key="book.id"
-            :color="'brown' || book.color.color"
+            :color="book.color.color"
             dark
             class="mt-3"
           >
@@ -57,7 +57,7 @@
             <v-card-actions class="d-flex align-center justify-space-between">
               <v-btn
                 v-if="book.previewLink"
-                class="ml-2"
+                class="ml-2 my-1"
                 :href="book.previewLink"
                 outlined
                 rounded
@@ -65,11 +65,11 @@
               >
                 More Info
               </v-btn>
-              <div>
+              <div class="pills">
                 <v-btn
                   v-for="pill in createPills(book)"
                   :key="pill"
-                  class="ml-2"
+                  class="ml-2 my-1"
                   outlined
                   rounded
                   small
@@ -79,7 +79,7 @@
 
                 <v-btn
                   v-if="book.loadingARData"
-                  class="ml-2"
+                  class="ml-2 my-1"
                   outlined
                   rounded
                   small
@@ -108,7 +108,7 @@ import { Vue, Component } from "vue-property-decorator";
 import debounce from "lodash/debounce";
 import { namespace } from "vuex-class";
 import ISO6391 from "iso-639-1";
-
+import uniqolor from "uniqolor";
 import { getModule } from "vuex-module-decorators";
 import bookModule, { bookModuleName } from "store/books";
 import { Book } from "src/applicationInterfaces";
@@ -122,7 +122,18 @@ export default class AdminPage extends Vue {
   @books.State("books") books: Book[];
 
   get search() {
-    return debounce(this.searchList, 300);
+    return debounce(this.searchList, 500);
+  }
+
+  get booksWithColors() {
+    return this.books.map(book => ({
+      ...book,
+      color: uniqolor(book.id, {
+        saturation: [35, 75],
+        lightness: 20,
+        differencePoint: 30,
+      }),
+    }));
   }
 
   createPills(book: Book) {
@@ -143,13 +154,6 @@ export default class AdminPage extends Vue {
     await getModule(bookModule, this.$store).getGoogleBookList(this.value);
     this.loading = false;
   }
-
-  async searchSingle() {}
-
-  mounted() {
-    this.value = "East of Eden";
-    this.search();
-  }
 }
 </script>
 
@@ -162,5 +166,11 @@ export default class AdminPage extends Vue {
 .description {
   max-height: 200px;
   overflow: auto;
+}
+
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
 }
 </style>

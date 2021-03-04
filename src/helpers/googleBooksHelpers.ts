@@ -49,15 +49,15 @@ export const updateBookWithArInfo = (
 
   const indexOfResult = findIndex(books, { id });
 
-  console.log(id, arData, indexOfResult);
-
-  if (indexOfResult > -1 && arData.isExactMatch) {
+  if (indexOfResult > -1) {
     books[indexOfResult] = {
       ...books[indexOfResult],
       arDataAvailable: arData.isExactMatch,
       loadingARData: false,
     };
+  }
 
+  if (indexOfResult > -1 && arData.isExactMatch) {
     books[indexOfResult] = {
       ...books[indexOfResult],
       level: arData.level,

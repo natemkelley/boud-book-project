@@ -12,7 +12,7 @@ export const getSingleBook = async (bookId: string) => {
     .then(({ data }) => data as GoogleSearchListItem);
 };
 
-export const getBookList = async (searchString: string, maxResults = 20) => {
+export const getBookList = async (searchString: string, maxResults = 10) => {
   const query = queryString.stringify({ q: searchString, maxResults });
   return (await axios
     .get(GOOGLE_BOOK_LIST(query))

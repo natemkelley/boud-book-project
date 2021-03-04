@@ -1,11 +1,11 @@
-import { getBookList, GoogleSearchListItem, getPoints } from "../src/api/index";
+import Vue from "vue";
 import { Module, VuexModule, Mutation, Action } from "vuex-module-decorators";
+import { getBookList, GoogleSearchListItem, getPoints } from "../src/api/index";
 import {
   normalizeGoogleBookList,
   updateBookWithArInfo,
 } from "../src/helpers/index";
 import { Book } from "../src/applicationInterfaces/index";
-import uniqolor from "uniqolor";
 
 export const bookModuleName = "books";
 
@@ -25,26 +25,14 @@ interface BookSearch {
 export default class BookModule extends VuexModule {
   books: GoogleSearchListItem[] = [];
 
-  get booksWithColors() {
-    return this.books.map(book => ({
-      ...book,
-      color: uniqolor(book.id, {
-        saturation: [35, 75],
-        lightness: 20,
-        differencePoint: 30,
-      }),
-    }));
-  }
-
   @Mutation
   [SAVE_GOOGLE_BOOK_LIST](books: GoogleSearchListItem[]) {
-    console.log("saving books", books);
-    this.books = books;
+    this.books = [...books];
   }
 
   @Action
   async getGoogleBookList(search: string) {
-    const { items, totalItems } = await getBookList(search, 2);
+    const { items } = await getBookList(search, 5);
     const normalizedData = normalizeGoogleBookList(items) as Book[];
     this.context.commit(SAVE_GOOGLE_BOOK_LIST, normalizedData);
 

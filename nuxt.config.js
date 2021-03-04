@@ -67,6 +67,7 @@ export default {
     styles: resolve(__dirname, "./assets/styles"),
     api: resolve(__dirname, "./src/api"),
     helpers: resolve(__dirname, "./helpers"),
+    store: resolve(__dirname, "./store"),
   },
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify

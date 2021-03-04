@@ -50,7 +50,6 @@ export default class HomePage extends Vue {
 
   async performSearch() {
     const result = await getBookList(this.value);
-    console.log(result);
     this.items = result.items;
 
     this.items.forEach((result: any) => {

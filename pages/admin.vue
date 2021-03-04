@@ -25,7 +25,7 @@
           <v-card
             v-for="book in books"
             :key="book.id"
-            :color="book.color.color"
+            :color="'brown' || book.color.color"
             dark
             class="mt-3"
           >
@@ -33,33 +33,32 @@
               <div class="d-flex flex-column">
                 <v-card-title
                   class="headline"
-                  v-text="book.volumeInfo.title"
+                  v-text="book.title"
                 ></v-card-title>
                 <v-card-subtitle
-                  v-text="book.volumeInfo.author"
+                  v-for="author in book.authors"
+                  :key="author"
+                  v-text="author"
                 ></v-card-subtitle>
                 <v-card-text class="description">
-                  {{ book.volumeInfo.description }}
+                  {{ book.description }}
                 </v-card-text>
               </div>
 
               <div class="ma-3 mr-4">
                 <v-img
-                  v-if="
-                    book.volumeInfo.imageLinks &&
-                      book.volumeInfo.imageLinks.thumbnail
-                  "
+                  v-if="book.images.thumbnail"
                   :width="150"
                   gradient="to top right, rgba(100,115,201,.33), rgba(25,32,72,.7)"
-                  :src="book.volumeInfo.imageLinks.thumbnail"
+                  :src="book.images.thumbnail"
                 ></v-img>
               </div>
             </div>
             <v-card-actions class="d-flex align-center justify-space-between">
               <v-btn
-                v-if="book.volumeInfo.previewLink"
+                v-if="book.previewLink"
                 class="ml-2"
-                :href="book.volumeInfo.previewLink"
+                :href="book.previewLink"
                 outlined
                 rounded
                 small
@@ -77,6 +76,22 @@
                 >
                   {{ pill }}
                 </v-btn>
+
+                <v-btn
+                  v-if="book.loadingARData"
+                  class="ml-2"
+                  outlined
+                  rounded
+                  small
+                >
+                  <div class="mr-1">AR DATA</div>
+                  <v-progress-circular
+                    :size="14"
+                    :width="2"
+                    indeterminate
+                    color="white"
+                  ></v-progress-circular>
+                </v-btn>
               </div>
             </v-card-actions>
           </v-card>
@@ -91,55 +106,41 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import debounce from "lodash/debounce";
-import { getBookList, GoogleSearchListItem } from "api/index";
-import uniqolor from "uniqolor";
+import { namespace } from "vuex-class";
 import ISO6391 from "iso-639-1";
-import moment from "moment";
+
+import { getModule } from "vuex-module-decorators";
+import bookModule, { bookModuleName } from "store/books";
+import { Book } from "src/applicationInterfaces";
+
+const books = namespace(bookModuleName);
 
 @Component
 export default class AdminPage extends Vue {
   value = "";
-  booksList: GoogleSearchListItem[] = [];
-  singleBook: GoogleSearchListItem | null = null;
   loading = false;
+  @books.State("books") books: Book[];
 
   get search() {
     return debounce(this.searchList, 300);
   }
 
-  get books() {
-    return this.booksList.map(book => ({
-      ...book,
-      color: uniqolor(book.id, {
-        saturation: [35, 75],
-        lightness: 20,
-        differencePoint: 30,
-      }),
-      volumeInfo: {
-        ...book.volumeInfo,
-        author: (book.volumeInfo.authors && book.volumeInfo.authors[0]) || "",
-      },
-    }));
-  }
-
-  createPills(book: GoogleSearchListItem) {
+  createPills(book: Book) {
     const returnArray = [];
-    if (book.volumeInfo.language)
-      returnArray.push(ISO6391.getName(book.volumeInfo.language));
-    if (book.accessInfo.country) returnArray.push(book.accessInfo.country);
-    if (book.accessInfo.publicDomain) returnArray.push("Public Domain");
-    if (book.volumeInfo.pageCount)
-      returnArray.push(`${book.volumeInfo.pageCount} Pages`);
-    if (book.volumeInfo.publishedDate)
-      returnArray.push(moment(book.volumeInfo.publishedDate).year());
-    if (book.volumeInfo.publisher) returnArray.push(book.volumeInfo.publisher);
+    if (book.language) returnArray.push(ISO6391.getName(book.language));
+    if (book.countryOfOrigin) returnArray.push(book.countryOfOrigin);
+    if (book.publicDomain) returnArray.push("Public Domain");
+    if (book.pageCount) returnArray.push(`${book.pageCount} Pages`);
+    if (book.publishYear) returnArray.push(`Published: ${book.publishYear}`);
+    if (book.points) returnArray.push(`${book.points} Points`);
+    if (book.level) returnArray.push(`Level ${book.level}`);
 
     return returnArray;
   }
 
   async searchList() {
     this.loading = true;
-    this.booksList = (await getBookList(this.value)).items;
+    await getModule(bookModule, this.$store).getGoogleBookList(this.value);
     this.loading = false;
   }
 

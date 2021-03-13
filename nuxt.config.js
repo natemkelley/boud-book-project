@@ -33,7 +33,7 @@ export default {
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
-  css: [],
+  css: ["node_modules/@mdi/font/css/materialdesignicons.min.css"],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [],
@@ -54,6 +54,11 @@ export default {
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {},
+
+  //router
+  router: {
+    middleware: "routerAuth",
+  },
 
   // PWA module configuration: https://go.nuxtjs.dev/pwa
   pwa: {
@@ -86,6 +91,13 @@ export default {
           success: colors.green.accent3,
         },
       },
+    },
+    defaultAssets: {
+      font: true,
+      icons: "md",
+    },
+    icons: {
+      iconfont: "md",
     },
   },
 

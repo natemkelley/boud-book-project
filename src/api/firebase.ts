@@ -1,5 +1,6 @@
 import firebase from "firebase/app";
 import "firebase/firestore";
+import "firebase/auth";
 
 firebase.initializeApp({
   apiKey: process.env.apiKey,
@@ -11,15 +12,5 @@ firebase.initializeApp({
   measurementId: process.env.measurementId,
 });
 
-const $fireStore = firebase.firestore();
-
-const unpackDocuments = (
-  docs: firebase.firestore.QueryDocumentSnapshot<
-    firebase.firestore.DocumentData
-  >[]
-) => docs.map(doc => doc.data());
-
-export const test = async () => {
-  const { docs } = await $fireStore.collection("books").get();
-  return unpackDocuments(docs);
-};
+export const $fireStore = firebase.firestore();
+export const $auth = firebase.auth();

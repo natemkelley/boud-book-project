@@ -9,34 +9,38 @@ export const normalizeGoogleBookData = (book: GoogleSearchListItem): Book => {
     thumbnail: "https://i.imgur.com/sJ3CT4V.gif",
   };
 
-  return {
-    title: book.volumeInfo.title, //
-    id: book.id, //
-    authors: book.volumeInfo.authors || [], //
-    countryOfOrigin: book.accessInfo.country, //
-    publicDomain: book.accessInfo.publicDomain, //
-    description: book.volumeInfo.description, //
-    googleApiLink: book.selfLink, //
-    averageRating: book.volumeInfo.averageRating, //
-    ratingsCount: book.volumeInfo.ratingsCount, //
-    language: book.volumeInfo.language, //
-    pageCount: book.volumeInfo.pageCount, //
-    previewLink: book.volumeInfo.previewLink, //
-    publishYear: moment(book.volumeInfo.publishedDate).year(),
-    originalPublishYear: null,
-    categories: book.volumeInfo.categories || [],
-    isbn: industryIdentifiers.map(item => ({
-      isbn: item.identifier,
-      publisher: book.volumeInfo.publisher,
-    })),
-    images: {
-      thumbnail: imageLinks.thumbnail,
-      medium: "",
-      large: "",
-    },
-    arDataAvailable: null,
-    loadingARData: true,
-  };
+  try {
+    return {
+      title: book.volumeInfo.title, //
+      id: book.id, //
+      authors: book.volumeInfo.authors || [], //
+      countryOfOrigin: book.accessInfo.country, //
+      publicDomain: book.accessInfo.publicDomain, //
+      description: book.volumeInfo.description, //
+      googleApiLink: book.selfLink, //
+      averageRating: book.volumeInfo.averageRating, //
+      ratingsCount: book.volumeInfo.ratingsCount, //
+      language: book.volumeInfo.language, //
+      pageCount: book.volumeInfo.pageCount, //
+      previewLink: book.volumeInfo.previewLink, //
+      publishYear: moment(book.volumeInfo.publishedDate).year(),
+      originalPublishYear: null,
+      categories: book.volumeInfo.categories || [],
+      isbn: industryIdentifiers.map(item => ({
+        isbn: item.identifier,
+        publisher: book.volumeInfo.publisher,
+      })),
+      images: {
+        thumbnail: imageLinks.thumbnail,
+        medium: "",
+        large: "",
+      },
+      arDataAvailable: null,
+      loadingARData: true,
+    };
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 export const normalizeGoogleBookList = (books: GoogleSearchListItem[]) => {

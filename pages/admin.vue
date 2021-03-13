@@ -122,7 +122,7 @@ export default class AdminPage extends Vue {
   @books.State("books") books: Book[];
 
   get search() {
-    return debounce(this.searchList, 500);
+    return debounce(this.searchList, 600);
   }
 
   get booksWithColors() {

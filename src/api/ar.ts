@@ -2,7 +2,7 @@ import queryString from "query-string";
 import axios from "axios";
 import { ARResult } from "./interfaces";
 
-//const LOCAL_API = "http://localhost:8080";
+//const BOUD_BOOK_SCRUBBER = "http://localhost:8080"; //LOCAL
 const BOUD_BOOK_SCRUBBER = "https://boudbookscrubber.duckdns.org";
 
 const createArQuery = (title: string, author: string) => {

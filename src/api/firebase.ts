@@ -12,5 +12,6 @@ firebase.initializeApp({
   measurementId: process.env.measurementId,
 });
 
+export const googleProvider = new firebase.auth.GoogleAuthProvider();
 export const $fireStore = firebase.firestore();
 export const $auth = firebase.auth();

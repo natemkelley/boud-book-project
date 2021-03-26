@@ -1,3 +1,7 @@
-import firebase from "firebase/app";
-
-export interface UserInfo extends firebase.User {}
+export interface UserInfo {
+  displayName: string;
+  email: string;
+  photoURL: string;
+  uid: string;
+  phoneNumber?: string;
+}

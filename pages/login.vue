@@ -9,6 +9,9 @@
         ></v-img>
         Sign in with Google
       </v-btn>
+      <v-btn @click="signOut" outlined color="red" class="ma-2">
+        Sign out
+      </v-btn>
     </div>
 
     <v-card v-if="user" class="mt-6 mx-auto" max-width="344" outlined>
@@ -44,7 +47,13 @@ export default class AdminPage extends Vue {
   @user.State("user") user: UserInfo;
 
   async signIntoApplication() {
+    console.log("in");
     await getModule(userModule, this.$store).googleSignIn();
+    console.log("out");
+  }
+
+  async signOut() {
+    await getModule(userModule, this.$store).signOut();
   }
 }
 </script>

@@ -2,10 +2,15 @@ import firebase from "firebase/app";
 import { $auth, googleProvider } from "./firebase";
 
 export const loginWithGoogle = async () => {
-  const userInfo = await $auth
-    .signInWithPopup(googleProvider)
-    .then(result => result.additionalUserInfo.profile);
-  return userInfo as firebase.User;
+  console.log("logging in sir");
+  try {
+    await $auth.signInWithPopup(googleProvider);
+
+    console.log("did it");
+    return;
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 export const signOut = async () => {

@@ -47,9 +47,7 @@ export default class AdminPage extends Vue {
   @user.State("user") user: UserInfo;
 
   async signIntoApplication() {
-    console.log("in");
     await getModule(userModule, this.$store).googleSignIn();
-    console.log("out");
   }
 
   async signOut() {

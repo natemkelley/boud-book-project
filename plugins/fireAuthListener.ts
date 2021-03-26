@@ -1,5 +1,5 @@
 import { getModule } from "vuex-module-decorators";
-import userModule from "../store/user";
+import userModule, { SAVE_USER_INFO } from "../store/user";
 import { $auth } from "../src/api/firebase";
 import firebase from "firebase/app";
 
@@ -12,9 +12,7 @@ export default async ({ store }) => {
   return new Promise((resolve, reject) => {
     $auth.onAuthStateChanged(function(user) {
       if (user) {
-        getModule(userModule, store).submitUserInfoToBeSaved(
-          extractUserInfo(user)
-        );
+        getModule(userModule, store)[SAVE_USER_INFO](extractUserInfo(user));
       }
       resolve(true);
     });

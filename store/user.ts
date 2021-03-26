@@ -16,7 +16,6 @@ export default class BookModule extends VuexModule {
 
   @Mutation
   [SAVE_USER_INFO](user: UserInfo) {
-    console.log("saving info", user);
     this.user = user;
   }
 
@@ -29,12 +28,6 @@ export default class BookModule extends VuexModule {
   async signOut() {
     await signOut();
     this[SAVE_USER_INFO](null);
-    return;
-  }
-
-  @Action
-  async submitUserInfoToBeSaved(user: UserInfo) {
-    this[SAVE_USER_INFO](user);
     return;
   }
 }

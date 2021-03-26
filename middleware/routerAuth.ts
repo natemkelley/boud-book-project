@@ -7,7 +7,6 @@ export default function({ store, redirect, route }: Context) {
 }
 
 const isLoginPage = (route: Route) => {
-  console.log("matching");
   if (route.matched.some(record => record.path == "/login")) {
     return true;
   }

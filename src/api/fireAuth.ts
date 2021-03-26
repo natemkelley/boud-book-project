@@ -5,11 +5,9 @@ export const loginWithGoogle = async () => {
   console.log("logging in sir");
   try {
     await $auth.signInWithPopup(googleProvider);
-
-    console.log("did it");
     return;
   } catch (error) {
-    console.log(error);
+    //
   }
 };
 
